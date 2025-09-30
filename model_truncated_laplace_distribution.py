@@ -217,7 +217,7 @@ if __name__ == "__main__":
     params = initialize_parameters()
     args = parse_arguments()
     
-    output_path = os.path.join(args.output_dir, 'truncated_normal', 
+    output_path = os.path.join(args.output_dir, 'truncated_laplace', 
                           f'm={args[0]}_sd={args[1]}')
     # if the output path does not exist, create it
     if not os.path.exists(output_path):
