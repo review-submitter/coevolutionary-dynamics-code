@@ -47,6 +47,8 @@ def parse_arguments():
     parser.add_argument('ancestor_predator_capacity', type=float, help='Ancestor predator capacity value')
     parser.add_argument('rep', type=int, help='Array job replication ID')
     parser.add_argument('seed', type=int, help='Random number generator seed')
+    parser.add_argument('--output_dir', type=str, default='./output', 
+                   help='Output directory path')
 
     args = parser.parse_args()
     return (args.m, args.std_dev, args.ancestor_prey_growth,
@@ -219,7 +221,8 @@ if __name__ == "__main__":
     params = initialize_parameters()
     args = parse_arguments()
 
-    output_path = '/your_path/truncated_normal/m={}_sd={}/'.format(args[0], args[1])
+    output_path = os.path.join(args.output_dir, 'truncated_normal', 
+                          f'm={args[0]}_sd={args[1]}')
     # if the output path does not exist, create it
     if not os.path.exists(output_path):
         os.makedirs(output_path, exist_ok=True)
