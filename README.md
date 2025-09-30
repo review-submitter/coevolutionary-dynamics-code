@@ -1,36 +1,75 @@
 # Predator-Prey Coevolution Simulation
+
 This repository contains code for simulating predator-prey coevolution dynamics using stochastic individual-based models with the Gillespie algorithm. The simulation models the evolutionary dynamics of prey and predator populations with different mutation distribution models. 
 
-## Overview
-The simulation tracks the coevolution of prey and predator species where:
-- **Prey** have a growth-defense trade-off parameter (g-value, ranging from 0 to 1)
-- **Predator** have a reproduction efficiency parameter (k-value, ranging from 0 to 0.3)
-- Mutations occur during reproduction, introducing trait variation
-- Population dynamics are governed by birth, death, predation, and competition processes
+## Files
 
+- **`species.py`**: Defines `Prey` and `Predator` classes with reproduction, death, and mutation methods
+- **`coevolution_functions.py`**: Utility functions including Gillespie algorithm, distribution samplers, and extinction checks
+- **`model_truncated_normal_distribution.py`**: Simulation with truncated normal mutation distribution
+- **`model_truncated_laplace_distribution.py`**: Simulation with truncated Laplace mutation distribution
+- **`model_uniform_distribution.py`**: Simulation with uniform mutation distribution
 
-Files Description
+## Required Software and Packages
 
-### Core Files
+- Python 3.7 or higher  
+- numpy  
+- scipy  
+- pandas
+- 
+## Usage
 
-1. **`species.py`**
-    - Defines the `Prey` and `Predator` classes
-    - Implements methods for reproduction, death, and mutation
-    - Each species type is characterized by its trait value and population size
-2. **`coevolution_functions.py`**
-    - Contains utility functions for the simulation:
-        - `get_truncnorm_number()`: Generates random numbers from truncated normal distribution
-        - `sample_truncated_laplace()`: Generates random numbers from truncated Laplace distribution
-        - `find_reaction()`: Implements Gillespie algorithm for stochastic simulation
-        - `extinction_check()`: Checks and handles species extinction
-        - Diversity indices: `shannon_index()` and `simpson_index()`
-        - Additional helper functions for data recording
-3. **`model_truncated_normal_distribution.py`**
-    - Main simulation script using **truncated normal distribution** for mutations
-    - Mutations are drawn from a normal distribution centered at parent trait value
-4. **`model_truncated_laplace_distribution.py`**
-    - Main simulation script using **truncated Laplace distribution** for mutations
-    - Laplace distribution has heavier tails than normal distribution
-5. **`model_uniform_distribution.py`**
-    - Main simulation script using **uniform distribution** for mutations
-    - Mutations are uniformly distributed across the entire trait range
+### Truncated Normal/Laplace Models
+
+```bash
+python model_truncated_normal_distribution.py <m> <std_dev> <ancestor_prey_g> <ancestor_pred_k> <rep> <seed>
+```
+
+### Uniform Model
+
+```bash
+python model_uniform_distribution.py <m> <ancestor_prey_g> <ancestor_pred_k> <rep> <seed>
+```
+
+**Arguments:**
+
+- `m`: Predation scaling coefficient (e.g., 0.5, 1.0, 2.0)
+- `std_dev`: Mutation standard deviation (e.g., 0.1, 0.2)
+- `ancestor_prey_g`: Initial prey trait value, range [0,1] (e.g., 0.5)
+- `ancestor_pred_k`: Initial predator trait value, range [0,0.3] (e.g., 0.15)
+- `rep`: Replication ID (e.g., 1, 2, 3)
+- `seed`: Random seed (e.g., 12345)
+
+**Example:**
+
+```bash
+python model_truncated_normal_distribution.py 1.0 0.1 1.0 0.3 1 12345
+```
+
+## Output
+
+Generates `.pkl` files containing:
+
+- `status`: 0 (both extinct), 1 (predator extinct), or 2 (coexist)
+- `simulation_time`: Time when simulation ended
+- `output_dict`: DataFrame with time series of trait values and population sizes
+
+**Read output:**
+
+```python
+import pickle
+with open('simulation_data_1.pkl', 'rb') as f:
+    data = pickle.load(f)
+```
+
+## Key Parameters
+
+- Initial populations: 1000 prey, 100 predators
+- Max simulation time: 2500 units
+- Prey mutation rate: 0.0005
+- Predator mutation rate: 0.005
+- Recording interval: Every 1 time unit
+
+## Note
+
+File paths are parameterized for anonymity. To customize output location, modify the `output_path` variable in the script's main block.
